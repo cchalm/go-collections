@@ -49,7 +49,8 @@ func TestSet_InitialElements(t *testing.T) {
 
 func TestSet_String(t *testing.T) {
 	s := MakeSet(10, 20)
-	require.True(t, "{10, 20}" == s.String() || "{20, 10}" == s.String())
+	str := s.String()
+	require.True(t, "{10, 20}" == str || "{20, 10}" == str, str)
 }
 
 func TestSet_ToSlice(t *testing.T) {
