@@ -1,6 +1,7 @@
 package collections
 
 import (
+	"math/rand"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -47,4 +48,36 @@ func TestPriorityQueue_PushPopStruct(t *testing.T) {
 	pq.Push(intWrapper{i: 10})
 	require.Equal(t, intWrapper{i: 20}, pq.Pop())
 	require.Equal(t, intWrapper{i: 10}, pq.Pop())
+}
+
+func getSeededPriorityQueue(r *rand.Rand, n int) *PriorityQueue[int] {
+	seedData := make([]int, n)
+	for i := range seedData {
+		seedData[i] = r.Int()
+	}
+	return MakePriorityQueue(func(a, b int) int { return a - b }, seedData...)
+}
+
+func BenchmarkPriorityQueue_PushPop_1e3(b *testing.B) {
+	// Use a constant seed to get an arbitrary, deterministic sequence of values
+	r := rand.New(rand.NewSource(230427))
+	pq := getSeededPriorityQueue(r, 1e3)
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		pq.Push(r.Int())
+		pq.Pop()
+	}
+}
+
+func BenchmarkPriorityQueue_PushPop_1e6(b *testing.B) {
+	// Use a constant seed to get an arbitrary, deterministic sequence of values
+	r := rand.New(rand.NewSource(458326))
+	pq := getSeededPriorityQueue(r, 1e6)
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		pq.Push(r.Int())
+		pq.Pop()
+	}
 }
