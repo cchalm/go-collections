@@ -9,6 +9,7 @@ import (
 func TestQueue_Empty(t *testing.T) {
 	q := MakeQueue[int]()
 	require.Equal(t, 0, q.Len())
+	require.Panics(t, func() { q.Pop() })
 }
 
 func TestQueue_PushPop(t *testing.T) {

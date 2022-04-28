@@ -9,6 +9,7 @@ import (
 func TestPriorityQueue_Empty(t *testing.T) {
 	pq := MakePriorityQueue(func(a, b int) int { return a - b })
 	require.Equal(t, 0, pq.Len())
+	require.Panics(t, func() { pq.Pop() })
 }
 
 func TestPriorityQueue_PushPopInt(t *testing.T) {

@@ -9,6 +9,7 @@ import (
 func TestStack_Empty(t *testing.T) {
 	s := MakeStack[int]()
 	require.Equal(t, 0, s.Len())
+	require.Panics(t, func() { s.Pop() })
 }
 
 func TestStack_PushPop(t *testing.T) {
