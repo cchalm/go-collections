@@ -35,6 +35,14 @@ func (s Set[E]) Contains(element E) bool {
 	return ok
 }
 
+// Remove removes the given element from the set, if present. It returns true if the element was found in the set, false
+// otherwise
+func (s Set[E]) Remove(element E) bool {
+	_, ok := s.m[element]
+	delete(s.m, element)
+	return ok
+}
+
 func (s Set[E]) Len() int {
 	return len(s.m)
 }

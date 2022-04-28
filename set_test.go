@@ -1,6 +1,7 @@
 package collections
 
 import (
+	"math/rand"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -47,6 +48,19 @@ func TestSet_InitialElements(t *testing.T) {
 	require.True(t, s.Contains(30))
 }
 
+func TestSet_Remove(t *testing.T) {
+	s := MakeSet[int]()
+	s.Insert(10)
+	require.Equal(t, 1, s.Len())
+	found := s.Remove(20)
+	require.False(t, found)
+	require.Equal(t, 1, s.Len())
+	found = s.Remove(10)
+	require.True(t, found)
+	require.Equal(t, 0, s.Len())
+	require.False(t, s.Contains(10))
+}
+
 func TestSet_String(t *testing.T) {
 	s := MakeSet(10, 20)
 	str := s.String()
@@ -56,4 +70,38 @@ func TestSet_String(t *testing.T) {
 func TestSet_ToSlice(t *testing.T) {
 	s := MakeSet(10, 20)
 	require.ElementsMatch(t, []int{10, 20}, s.ToSlice())
+}
+
+func getSeededSet(r *rand.Rand, n int) *Set[int] {
+	seedData := make([]int, n)
+	for i := range seedData {
+		seedData[i] = r.Int()
+	}
+	return MakeSet(seedData...)
+}
+
+func BenchmarkSet_InsertRemove_1e3(b *testing.B) {
+	// Use a constant seed to get an arbitrary, deterministic sequence of values
+	r := rand.New(rand.NewSource(230427))
+	pq := getSeededSet(r, 1e3)
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		n := r.Int()
+		pq.Insert(n)
+		pq.Remove(n)
+	}
+}
+
+func BenchmarkSet_InsertRemove_1e6(b *testing.B) {
+	// Use a constant seed to get an arbitrary, deterministic sequence of values
+	r := rand.New(rand.NewSource(458326))
+	pq := getSeededSet(r, 1e6)
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		n := r.Int()
+		pq.Insert(n)
+		pq.Remove(n)
+	}
 }
