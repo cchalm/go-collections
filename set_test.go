@@ -72,6 +72,42 @@ func TestSet_ToSlice(t *testing.T) {
 	require.ElementsMatch(t, []int{10, 20}, s.ToSlice())
 }
 
+func TestSet_CompareStructs(t *testing.T) {
+	type a struct {
+		x int
+		y string
+	}
+
+	in1 := a{1, "foo"}
+	in2 := a{2, "bar"}
+	out1 := a{3, "baz"}
+
+	s := MakeSet(in1, in2)
+	require.True(t, s.Contains(in1))
+	require.True(t, s.Contains(in2))
+	require.False(t, s.Contains(out1))
+}
+
+func TestSet_CompareInterfaces(t *testing.T) {
+	type a struct {
+		x int
+		y string
+	}
+
+	var in1 any = a{1, "foo"}
+	var in2 any = "bar"
+	var out1 any = a{3, "baz"}
+	var out2 any = "foo"
+	var out3 any = 10
+
+	s := MakeSet(in1, in2)
+	require.True(t, s.Contains(in1))
+	require.True(t, s.Contains(in2))
+	require.False(t, s.Contains(out1))
+	require.False(t, s.Contains(out2))
+	require.False(t, s.Contains(out3))
+}
+
 func getSeededSet(r *rand.Rand, n int) *Set[int] {
 	seedData := make([]int, n)
 	for i := range seedData {
